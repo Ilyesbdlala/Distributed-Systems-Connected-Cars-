@@ -3,7 +3,7 @@ This Project shows an example of "Connected Cars"
 We simulate a car that has an indefinite number of sensors ( 4 in the initial example) that communicate to a central system through an MoM (Message-oriented middleware): MQTT in particular.  
 This data is then relayed to an HTTP Client that allows viewing the state of each sensor.  
 The Data is first saved in the Central system and later persisted in cloud servers through a Service Provider (Apache Thrift)  
-![](.Vs_Praktikum_Design.png)  
+![](.VS_Praktikum_Design.png)  
 ## Dockerfiles
 
 The files [sensor](sensor) and [centralcontrol](centralcontrol) are the docker files. In these files, the Java projects are compiled in the first step and in the second step the jar is copied into a new container which is used for the execution.  

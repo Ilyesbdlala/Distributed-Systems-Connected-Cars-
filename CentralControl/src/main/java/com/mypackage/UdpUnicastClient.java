@@ -5,9 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-/**
- * Created by dan.geabunea on 6/3/2016.
- */
 public class UdpUnicastClient implements Runnable {
   private final int port;
 

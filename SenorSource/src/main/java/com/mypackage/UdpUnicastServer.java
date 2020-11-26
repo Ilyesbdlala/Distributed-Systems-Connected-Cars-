@@ -3,9 +3,6 @@ package com.mypackage;
 import java.io.IOException;
 import java.net.*;
 
-/**
- * Created by dan.geabunea on 6/3/2016.
- */
 public class UdpUnicastServer implements Runnable {
   /**
    * The port where the client is listening.

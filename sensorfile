@@ -1,0 +1,18 @@
+FROM maven:3.6-jdk-11 AS build
+
+#Build sensor
+COPY Sensor /usr/sensor/
+RUN mvn -f /usr/sensor/pom.xml clean package
+
+# Application Container
+FROM openjdk:9
+COPY --from=build /usr/sensor/target /usr/app
+
+# default paramters
+ARG ip="127.0.0.1"
+ARG port=51020
+ARG sensortype="Generic Sensor"
+
+COPY Sensor/sensor.sh /run.sh
+
+ENTRYPOINT ["sh","/run.sh"]

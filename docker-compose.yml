@@ -1,0 +1,41 @@
+version: '3.7'
+services:
+  sensor-one:
+    image: sensor:latest
+    build:
+      context: .
+      dockerfile: sensorfile
+    environment:
+      - 'ip=centralStation'
+      - 'port=51020'
+      - 'sensortype=Fuel_Level'
+  sensor-two:
+    image: sensor:latest
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=TravelDistance'
+  sensor-three:
+    image: sensor:latest
+    environment:
+      - 'ip=centralStation'
+      - 'port=51022'
+      - 'sensortype=TrafficState'
+  sensor-four:
+    image: sensor:latest
+    environment:
+      - 'ip=centralStation'
+      - 'port=51023'
+      - 'sensortype=AvgSpeed'
+  centralstation:
+    build:
+      context: .
+      dockerfile: centralfile
+    environment:
+      - 'stationname=Group_e9_Station'
+      - 'sensorcount=4'
+      - 'sensorstartport=51020'
+      - 'rpcip=127.0.0.1'
+    ports:
+      - 8080:8080
+      - 51030:51030

@@ -24,10 +24,42 @@ The Gitlab CI pipeline is in the file [.gitlab-ci.yml](.gitlab-ci.yml)
 
 ## Tests
 
-Average Response Time: The roundabout time of each HTTP Request/Response is measured.  
-Sensor Redundancy: System continues to work in the case of a sensor failure.  
-Cloud Server Redundancy: Usual System functionality in case of Server-failure (Servers are in Primary-Secondary Architecture Hot-Standby)  
-Performance Test: Sensors are created periodically to measure how many sensors the system can handle.  
-Race-Condition Test: Two sensors send Data Simultaneously. Data should arrive for both sensors at the central control  
-
-
+Test 1:  
+Check if Sensor Values are recieved correctly  
+Execution:  
+Compare output in Sensor container with output in Central container  
+  
+Test 2:  
+The roundabout time of each HTTP Request/Response is measured.  
+Execution:  
+Mesure how long the Central takes to answer Get requests  
+  
+Test 3:  
+Check if Sensor Values are persisted correctly in Service Provider Servers  
+Execution:  
+Compare saved sensor Values with the Service Provider's  
+  
+Test 4:  
+Availability Test  
+Execution:  
+Continually send pings to the Service Provider Server and count the number of responses   
+  
+Test 5:  
+Check if Sensor Values are still recieved correctly with MQTT  
+Execution:  
+Compare output in Sensor container with output in Central container  
+  
+Test 6:  
+Performance Test  
+Execution:  
+Sensors are created periodically to measure how many sensors the MQTT broker can handle  
+  
+Test 7:  
+Check if the sensor Values were correctly copied  
+Execution:  
+Compare first server data with Back-up data  
+  
+Test 8:  
+Usual System functionality in case of Server-failure (Servers are in Primary-Secondary Architecture Hot-Standby)  
+Execution:  
+Simulate server failure on Primary Server and see if data is still persisted   

@@ -22,7 +22,7 @@ public class Station {
       try {
         udp = new UdpListenerThread(this.sensorstartport + i, this.stationname);
         Thread t = new Thread(udp);
-        t.setName("Sensor :" + this.sensorstartport + i);
+        t.setName("Sensor:" + this.sensorstartport + i);
         t.start();
       } catch (IOException ex) {
         return;

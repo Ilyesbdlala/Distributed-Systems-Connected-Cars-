@@ -5,7 +5,7 @@ COPY Sensor /usr/sensor/
 RUN mvn -f /usr/sensor/pom.xml clean package
 
 # Application Container
-FROM openjdk:9
+FROM openjdk:11
 COPY --from=build /usr/sensor/target /usr/app
 
 # default paramters

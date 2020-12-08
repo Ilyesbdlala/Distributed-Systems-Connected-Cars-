@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 class Sensor {
@@ -7,11 +9,13 @@ class Sensor {
   public String ip;
   public int port;
   public String sensortype;
+  public String timeStamp;
 
   // udp
   public UdpUnicastServer udp;
 
   public void run() {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
     Random rand = new Random();
     double index = 0;
     int rain = 0;
@@ -21,12 +25,10 @@ class Sensor {
         index = index % 100; //max 500
         Thread.sleep(1000); //wait for one second
         int sensorValue = 0;
-        System.out.println("My Type is "+ this.sensortype);
-        System.out.println(this.sensortype.equals("Fuel_Level"));
 
-        String switchstr = this.sensortype.substring(0,this.sensortype.length()-1);
+        //String switchstr = this.sensortype.substring(0,this.sensortype.length()-1); //Remove
 
-        switch(switchstr) {
+        switch(this.sensortype) {
           case "Fuel_Level": {
             sensorValue = rand.nextInt(100);
             break;
@@ -46,9 +48,11 @@ class Sensor {
           default:
             sensorValue = -1;
         }
+        LocalDateTime now = LocalDateTime.now();
+        timeStamp = dtf.format(now);
 
-        udp.sendMessage("[" + this.sensortype + "] " + Integer.toString(sensorValue));
-        System.out.println(index + " " + sensorValue);
+        udp.sendMessage(this.timeStamp + ";" + this.sensortype + ";" + sensorValue);
+        //System.out.println(index + " " + sensorValue);
 
       } catch (InterruptedException ex) {
         return;

@@ -1,14 +1,12 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.SocketException;
 
 public class UdpListenerThread extends UdpUnicastClient implements Runnable {
-
-
-  private String stationname;
+  private final String stationName;
 
   public UdpListenerThread(int port, String stationname) throws SocketException{
     super(port);
-    this.stationname = stationname;
+    this.stationName = stationname;
   }
 
   @Override
@@ -22,11 +20,21 @@ public class UdpListenerThread extends UdpUnicastClient implements Runnable {
 
   @Override
   public void receivedMessage(String msg, int port, String ip) {
+    //log to console
+    System.out.print(msg + "\nPort: " + port + "\nIp: " + ip + "\n");
+    writeToFile(msg);
+  }
+
+  private void writeToFile(String msg) {
     try {
-      //log to console
-      System.out.println(msg + ";" + port + ";" + ip);
-    } catch (NumberFormatException e) {
+      File fi = new File("sensorValues.csv");
+      FileWriter writer = new FileWriter(fi);
+
+      writer.append(msg + "\n");
+      writer.close();
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
 }
+

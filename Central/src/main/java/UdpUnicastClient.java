@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -18,7 +20,6 @@ public class UdpUnicastClient{
     while(true) {
       DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
       this.socket.receive(datagramPacket);
-
       this.receivedMessage(new String(datagramPacket.getData(), 0, datagramPacket.getLength()), this.port, datagramPacket.getAddress().toString());
     }
   }

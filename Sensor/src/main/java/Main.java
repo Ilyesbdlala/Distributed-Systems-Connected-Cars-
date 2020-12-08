@@ -13,6 +13,7 @@ public class Main {
         s.ip = args[0];
         s.port = Integer.parseInt(args[1]);
         s.sensortype = args[2];
+        s.sensortype = s.sensortype.substring(0,s.sensortype.length()-1);
 
 
       } catch (ArrayIndexOutOfBoundsException e) {

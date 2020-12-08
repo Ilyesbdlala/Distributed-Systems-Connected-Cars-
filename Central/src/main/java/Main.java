@@ -1,9 +1,9 @@
+import java.io.File;
+
 public class Main {
 
   public static void main(String[] args) throws Exception {
     System.out.println("Station started");
-
-
     //init args
     Station s = new Station();
     HttpServer hs = new HttpServer();

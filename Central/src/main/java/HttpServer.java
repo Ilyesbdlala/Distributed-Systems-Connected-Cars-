@@ -51,6 +51,7 @@ public class HttpServer {
         if (Files.exists(filePath)) {
             // file exist
             String contentType = guessContentType(filePath);
+            //String contentType ="application/json";
             sendResponse(client, "200 OK", contentType, Files.readAllBytes(filePath));
         } else {
             // 404
@@ -78,9 +79,8 @@ public class HttpServer {
             return Paths.get(path);
         }
 
-        return Paths.get("/tmp/www", path);
+        return Paths.get("/", path);
     }
-
     private static String guessContentType(Path filePath) throws IOException {
         return Files.probeContentType(filePath);
     }

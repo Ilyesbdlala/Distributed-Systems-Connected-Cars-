@@ -51,7 +51,7 @@ class Sensor {
         LocalDateTime now = LocalDateTime.now();
         timeStamp = dtf.format(now);
 
-        udp.sendMessage(this.timeStamp + ";" + this.sensortype + ";" + sensorValue);
+        udp.sendMessage(this.timeStamp + "," + this.sensortype + "," + sensorValue);
         //System.out.println(index + " " + sensorValue);
 
       } catch (InterruptedException ex) {

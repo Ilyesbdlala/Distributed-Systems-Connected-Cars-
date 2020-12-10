@@ -2,36 +2,22 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketException;
-import com.google.gson.Gson;
 
 public class UdpListenerThread extends UdpUnicastClient implements Runnable {
-  private final String stationName;
+  private SensorData _sensorData;
+  private String _stationName;
 
-
-   class SensorData {
-    String timestamp;
-    String type;
-    String value;
-
-
-     public SensorData(String timestamp, String type, String value) {
-       this.timestamp = timestamp;
-       this.type = type;
-       this.value = value;
-     }
-   }
-
-  public UdpListenerThread(int port, String stationname) throws SocketException{
+  public UdpListenerThread(int port, String stationName) throws SocketException {
     super(port);
-    this.stationName = stationname;
+    this._stationName = stationName;
   }
 
   @Override
   public void run() {
     try {
       this.listen();
-    } catch (IOException ex) {
-      return;
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
@@ -39,10 +25,12 @@ public class UdpListenerThread extends UdpUnicastClient implements Runnable {
   public void receivedMessage(String msg, int port, String ip) {
     //log to console
     System.out.print(msg + "\nPort: " + port + "\nIp: " + ip + "\n");
-    writeToFile(msg);
+    this._sensorData = new SensorData(msg);
+    writeMessageToCsv(msg);
+    writeValueToJson();
   }
 
-  private void writeToFile(String msg) {
+  private void writeMessageToCsv(String msg) {
     try {
       // Sensor Data History
       FileWriter fw = new FileWriter("sensors", true);
@@ -50,17 +38,14 @@ public class UdpListenerThread extends UdpUnicastClient implements Runnable {
       bw.write(msg);
       bw.newLine();
       bw.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-
-      //Current Sensor Data
-      String[] dataElements = msg.split(",");
-      String timestamp = dataElements[0];
-      String sensorType = dataElements[1];
-      String value = dataElements[2];
-
-
-      String json = "{\"Timestamp\":\""+timestamp+"\",\"Sensor_Type\":\"" + sensorType + "\",\"Value\":" + value + "}";
-
+  private void writeValueToJson() {
+    try {
+      String json = this._sensorData.toJsonString();
 
      /*
       SensorData s = new SensorData(timestamp,sensorType,value);
@@ -68,22 +53,15 @@ public class UdpListenerThread extends UdpUnicastClient implements Runnable {
       String json = g.toJson(s);
       */
 
-        FileWriter ww = new FileWriter("sensor/" + sensorType);
-        BufferedWriter cw = new BufferedWriter(ww);
-        cw.write(json);
-        cw.newLine();
-        cw.close();
-
+      FileWriter ww = new FileWriter("sensor/" + _sensorData.type);
+      BufferedWriter cw = new BufferedWriter(ww);
+      cw.write(json);
+      cw.newLine();
+      cw.close();
 
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
-
-
-
-
-
-
 }
 

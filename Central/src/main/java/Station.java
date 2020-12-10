@@ -18,7 +18,7 @@ public class Station {
     this.udplts = new UdpListenerThread[this.sensorcount];
 
     int i = 0;
-    for(UdpListenerThread udp : this.udplts) {
+    for (UdpListenerThread udp : this.udplts) {
       try {
         udp = new UdpListenerThread(this.sensorstartport + i, this.stationname);
         Thread t = new Thread(udp);

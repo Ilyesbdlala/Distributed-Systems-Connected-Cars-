@@ -19,7 +19,7 @@ class Sensor {
     Random rand = new Random();
     double index = 0;
     int rain = 0;
-    while(true) {
+    while (true) {
       try {
         index++;
         index = index % 100; //max 500
@@ -28,12 +28,12 @@ class Sensor {
 
         //String switchstr = this.sensortype.substring(0,this.sensortype.length()-1); //Remove
 
-        switch(this.sensortype) {
+        switch (this.sensortype) {
           case "Fuel_Level": {
             sensorValue = rand.nextInt(100);
             break;
           }
-          case "TravelDistance":{
+          case "TravelDistance": {
             sensorValue = rand.nextInt(100000);
             break;
           }
@@ -46,7 +46,16 @@ class Sensor {
             break;
           }
           default:
-            sensorValue = -1;
+            /*
+             * On some Operating Systems, the sensorType gets
+             * passed with '/n' as the last String char.
+             *
+             * If that happens to be the case, the Systems go into the default
+             * Switch Case and the last char is then removed.
+             * */
+            this.sensortype = this.sensortype.substring(0, this.sensortype.length() - 1);
+            continue;
+            //sensorValue = -1;
         }
         LocalDateTime now = LocalDateTime.now();
         timeStamp = dtf.format(now);

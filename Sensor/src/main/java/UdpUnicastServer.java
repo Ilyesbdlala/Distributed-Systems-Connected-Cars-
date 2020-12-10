@@ -1,7 +1,9 @@
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
-public class UdpUnicastServer{
+public class UdpUnicastServer {
   private final int port;
   private DatagramSocket socket;
   private InetAddress address;
@@ -15,8 +17,7 @@ public class UdpUnicastServer{
   public void sendMessage(String msg) throws IOException {
     this.socket = new DatagramSocket(this.port); //Bind socket to port
     this.address = InetAddress.getByName(ip);
-    byte[] buffer = new byte[65507];
-    buffer = msg.getBytes();
+    byte[] buffer = msg.getBytes();
     DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length, this.address, this.port);
     this.socket.send(datagramPacket);
     this.socket.close();

@@ -7,13 +7,13 @@ The Data is first saved in the Central system and later persisted in cloud serve
 ![DesignDoc](./VS_Praktikum_Design.png)  
 ## Dockerfiles
 
-The files [sensor](sensor) and [centralcontrol](centralcontrol) are the docker files. In these files, the Java projects are compiled in the first step and in the second step the jar is copied into a new container which is used for the execution.  
+The files [sensorfile](sensorfile) and [centralfile](centralfile) are the docker files. In these files, the Java projects are compiled in the first step and in the second step the jar is copied into a new container which is used for the execution.  
 We follow the [Multi-Stage Builds](https://docs.docker.com/develop/develop-images/multistage-build/) Practice   
 
 ## Docker-Compose
 
 The Central Control has 4 sensors Fuel Level, Kilometers travelled, Traffic state and Avg. speed.  
-The Sensor type, IP and port are each configured in the compose file [docker-compose](docker-compose)  
+The Sensor type, IP and port are each configured in the compose file [docker-compose](docker-compose.yml )  
 
 ### How To - local build and run
 - `docker-compose -f docker-compose.yml build`  

@@ -1,7 +1,8 @@
 class SensorData {
-  String timestamp;
-  String type;
-  String value;
+  private String timestamp;
+  private String type;
+  private String value;
+  private int id;
 
 
   public SensorData(String timestamp, String type, String value) {
@@ -12,6 +13,14 @@ class SensorData {
 
   public SensorData(String message) {
     _parseMessage(message);
+  }
+
+  public void setId(int port){
+    this.id = port - 51019;
+  }
+
+  public int getId(){
+    return this.id;
   }
 
   private void _parseMessage(String msg) {

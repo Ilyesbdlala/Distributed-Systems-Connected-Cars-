@@ -15,7 +15,7 @@ ARG sensorstartport=51020
 ARG rpcip="127.0.0.1"
 
 # Expose all the ports for the sensors and management interface
-EXPOSE 8080 51020 51021 51022 51023
+EXPOSE 8080 51020 51021 51022 51023 51024
 
 COPY Central/station.sh /run.sh
 COPY Central/src/main/java/sensor /sensor

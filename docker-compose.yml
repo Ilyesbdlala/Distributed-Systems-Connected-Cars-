@@ -27,13 +27,19 @@ services:
       - 'ip=centralStation'
       - 'port=51023'
       - 'sensortype=AvgSpeed'
+  sensor-five:
+    image: sensor:latest
+    environment:
+      - 'ip=centralStation'
+      - 'port=51024'
+      - 'sensortype=AvgSpeed'
   centralstation:
     build:
       context: .
       dockerfile: centralfile
     environment:
       - 'stationname=Group_e9_Station'
-      - 'sensorcount=4'
+      - 'sensorcount=5'
       - 'sensorstartport=51020'
       - 'rpcip=127.0.0.1'
     ports:

@@ -26,6 +26,7 @@ public class UdpListenerThread extends UdpUnicastClient implements Runnable {
     //log to console
     System.out.print(msg + "\nPort: " + port + "\nIp: " + ip + "\n");
     this._sensorData = new SensorData(msg);
+    this._sensorData.setId(port);
     writeMessageToCsv(msg);
     writeValueToJson();
   }
@@ -53,7 +54,7 @@ public class UdpListenerThread extends UdpUnicastClient implements Runnable {
       String json = g.toJson(s);
       */
 
-      FileWriter ww = new FileWriter("sensor/" + _sensorData.type);
+      FileWriter ww = new FileWriter("sensor/" + _sensorData.getId());
       BufferedWriter cw = new BufferedWriter(ww);
       cw.write(json);
       cw.newLine();

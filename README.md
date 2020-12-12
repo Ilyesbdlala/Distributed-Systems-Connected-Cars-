@@ -10,14 +10,18 @@ The Data is first saved in the Central system and later persisted in cloud serve
 The files [sensorfile](sensorfile) and [centralfile](centralfile) are the docker files. In these files, the Java projects are compiled in the first step and in the second step the jar is copied into a new container which is used for the execution.  
 We follow the [Multi-Stage Builds](https://docs.docker.com/develop/develop-images/multistage-build/) Practice   
 
-## Docker-Compose
+## Installation
 
 The Central Control has 4 sensors Fuel Level, Kilometers travelled, Traffic state and Avg. speed.  
 The Sensor type, IP and port are each configured in the compose file [docker-compose](docker-compose.yml )  
 
 ### How To - local build and run
-- `docker-compose -f docker-compose.yml build`  
-- `docker-compose -f docker-compose.yml up`  
+- `docker-compose build`  
+- `docker-compose up`  
+
+### How To access Sensors in Web Client  
+- `localhost:8080/sensors` for sensor history  
+- `localhost:8080/sensor/[1-5]` for each Sensors' current status  
 
 ## Gitlab CI
 The Gitlab CI pipeline is in the file [.gitlab-ci.yml](.gitlab-ci.yml)  

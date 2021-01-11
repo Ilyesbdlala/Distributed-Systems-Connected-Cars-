@@ -16,7 +16,7 @@ public class Main {
       s.apiport = 8080;
       //s.rpcip = "127.0.0.1";
       s.rpcport = 51030;
-      System.out.println("Default to Generic Wheaterstation with 1 Sensor at :51020 and REST API at :8080");
+      System.out.println("Default to Generic Central Station with 1 Sensor at :51020 and REST API at :8080");
     }
     s.init();
     hs.launch();

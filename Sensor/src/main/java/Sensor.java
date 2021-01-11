@@ -4,29 +4,30 @@ import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 class Sensor {
-
   // params
   public String ip;
   public int port;
   public String sensortype;
   public String timeStamp;
 
-  // udp
-  public UdpUnicastServer udp;
+  public MqttPublisher mqttPub ;
 
   public void run() {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
     Random rand = new Random();
     double index = 0;
-    int rain = 0;
+    int sensorValue = 0;
     while (true) {
-      try {
+
         index++;
         index = index % 100; //max 500
+      try {
         Thread.sleep(1000); //wait for one second
-        int sensorValue = 0;
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
 
-        //String switchstr = this.sensortype.substring(0,this.sensortype.length()-1); //Remove
+      //String switchstr = this.sensortype.substring(0,this.sensortype.length()-1); //Remove
 
         switch (this.sensortype) {
           case "Fuel_Level": {
@@ -57,17 +58,13 @@ class Sensor {
             continue;
             //sensorValue = -1;
         }
+
         LocalDateTime now = LocalDateTime.now();
         timeStamp = dtf.format(now);
+        String messageString = this.port + "," + this.timeStamp + "," + this.sensortype + "," + sensorValue ;
 
-        udp.sendMessage(this.timeStamp + "," + this.sensortype + "," + sensorValue);
-        //System.out.println(index + " " + sensorValue);
-
-      } catch (InterruptedException ex) {
-        return;
-      } catch (IOException ex) {
-        return;
-      }
+        //Sending Message
+        mqttPub.sendMessage(messageString);
     }
   }
 

@@ -45,3 +45,12 @@ services:
     ports:
       - 8080:8080
       - 51030:51030
+
+  mosquitto:
+    image: "eclipse-mosquitto"
+    container_name: "mosquitto"
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes:
+      - "./mosquitto.conf:/mosquitto/config/mosquitto.conf"

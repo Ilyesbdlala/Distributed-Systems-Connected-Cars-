@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar /usr/app/Sensor-1.0-SNAPSHOT.jar $ip $port $sensortype
+java -jar --illegal-access=permit /usr/app/Sensor-1.0-SNAPSHOT.jar $ip $port $sensortype

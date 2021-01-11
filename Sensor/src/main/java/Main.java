@@ -19,8 +19,7 @@ public class Main {
     }
 
     System.out.println("Sensor started");
-
-    s.udp = new UdpUnicastServer(s.port, s.ip);
+    s.mqttPub = new MqttPublisher();
     s.run();
 
   }

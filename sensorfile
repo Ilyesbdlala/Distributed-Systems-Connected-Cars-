@@ -13,6 +13,8 @@ ARG ip="127.0.0.1"
 ARG port=51020
 ARG sensortype="Generic Sensor"
 
+EXPOSE 1883
+
 COPY Sensor/sensor.sh /run.sh
 
 ENTRYPOINT ["sh","/run.sh"]

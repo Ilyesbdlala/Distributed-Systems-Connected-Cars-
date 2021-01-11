@@ -25,9 +25,10 @@ class SensorData {
 
   private void _parseMessage(String msg) {
     String[] dataElements = msg.split(",");
-    this.timestamp = dataElements[0];
-    this.type = dataElements[1];
-    this.value = dataElements[2];
+    this.setId(Integer.parseInt(dataElements[0]));
+    this.timestamp = dataElements[1];
+    this.type = dataElements[2];
+    this.value = dataElements[3];
   }
 
   @Override

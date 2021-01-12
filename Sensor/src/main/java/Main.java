@@ -14,10 +14,10 @@ public class Main {
 
 
     } catch (ArrayIndexOutOfBoundsException e) {
-      s.ip = "127.0.0.1";
+      s.ip = "localhost";
       s.port = 51020;
-      s.sensortype = "Generic Sensor";
-      System.out.println("Defaulting to 127.0.0.1:51020 [Generic Sensor]");
+      s.sensortype = "Fuel_Level";
+      System.out.println("Defaulting to localhost:51020 [Fuel_Level]");
     }
 
     System.out.println("Sensor started");

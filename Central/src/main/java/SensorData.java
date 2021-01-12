@@ -1,4 +1,4 @@
-class SensorData {
+public class SensorData {
   private String timestamp;
   private String type;
   private String value;
@@ -42,9 +42,9 @@ class SensorData {
 
   public String toJsonString() {
     return "{"
-        + "\"Timestamp\":\"" + this.timestamp
-        + "\",\"Sensor_Type\":\"" + this.type
-        + "\",\"Value\":" + this.value
+        + "\"timestamp\":\"" + this.timestamp
+        + "\",\"sensortype\":\"" + this.type
+        + "\",\"value\":" + this.value
         + "}";
   }
 }

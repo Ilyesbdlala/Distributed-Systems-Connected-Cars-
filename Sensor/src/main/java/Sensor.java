@@ -15,11 +15,13 @@ class Sensor {
 
   public void run() throws MqttException {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     Random rand = new Random();
+
     double index = 0;
+
     int sensorValue = 0;
     while (true) {
-
         index++;
         index = index % 100; //max 500
       try {

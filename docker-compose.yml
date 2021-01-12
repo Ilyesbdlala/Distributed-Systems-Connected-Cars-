@@ -45,6 +45,16 @@ services:
     ports:
       - 8080:8080
       - 51030:51030
+  serviceprovider:
+    image: rpc
+    build:
+      context: .
+      dockerfile: serviceproviderfile
+    environment:
+      - 'ip=127.0.0.1'
+      - 'port=9091'
+    ports:
+      - 9091:9091
 
   mosquitto:
     image: "eclipse-mosquitto"

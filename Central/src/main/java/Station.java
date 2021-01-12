@@ -10,8 +10,10 @@ public class Station {
 
   public MqttSubscriber mqttSub;
 
-  public void init() {
+
+  public void init(RpcController rpc) {
     mqttSub = new MqttSubscriber();
+    mqttSub.setRpcHandler(rpc);
     mqttSub.run();
 
   }

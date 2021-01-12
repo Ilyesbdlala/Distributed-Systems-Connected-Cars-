@@ -9,7 +9,11 @@ public class MqttSubscriber {
     String broker = "tcp://mosquitto:1883";
     String topic = "hda/group_e_9/VS";
     PayloadHandler payloadHandler;
+    RpcController _rpcHandler;
 
+    public void setRpcHandler(RpcController rpc){
+        _rpcHandler = rpc;
+    }
 
     public void run(){
 
@@ -26,7 +30,7 @@ public class MqttSubscriber {
                     System.out.println("Message received: "+ message );
                     SensorData sd = new SensorData(message);
                     payloadHandler = new PayloadHandler(sd);
-                    payloadHandler.receivedMessage(message);
+                    payloadHandler.receivedMessage(message, _rpcHandler);
 
                 }
                 @Override

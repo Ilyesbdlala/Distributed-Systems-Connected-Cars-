@@ -10,9 +10,10 @@ public class PayloadHandler {
         _sensorData = s;
     }
 
-    public void receivedMessage(String msg) {
+    public void receivedMessage(String msg, RpcController rpc) {
         writeMessageToCsv(msg);
         writeValueToJson();
+        rpc.setValue(_sensorData);
     }
 
     private void writeMessageToCsv(String msg) {
@@ -42,4 +43,5 @@ public class PayloadHandler {
             e.printStackTrace();
         }
     }
+
 }

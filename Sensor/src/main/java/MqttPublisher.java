@@ -10,9 +10,9 @@ public class MqttPublisher {
     String topic = "hda/group_e_9/VS";
     MqttClient client;
 
-
     public void init() throws MqttException {
         // Create some MQTT connection options.
+
         MqttConnectOptions mqttConnectOpts = new MqttConnectOptions();
         mqttConnectOpts.setCleanSession(true);
         try {
@@ -26,6 +26,7 @@ public class MqttPublisher {
             } catch (MqttException e) {
                 e.printStackTrace();
             }
+
         } catch (MqttException e) {
             System.out.println("An error occurred: " + e.getMessage());
             // Disconnect from the MQTT broker.
@@ -42,6 +43,8 @@ public class MqttPublisher {
 
         // Publish the message.
         client.publish(topic, message);
+
+
         // Exit the app explicitly.
         // System.exit(0);
 

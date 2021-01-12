@@ -1,0 +1,14 @@
+FROM maven:3.6-jdk-11 AS build
+
+#Build
+COPY ServiceProvider /usr/serviceprovider/
+RUN mvn -f /usr/serviceprovider/pom.xml clean package
+
+# Application Container
+FROM openjdk:11
+COPY --from=build /usr/serviceprovider/target /
+
+COPY ServiceProvider/serviceprovider.sh /run.sh
+
+
+ENTRYPOINT ["sh","/run.sh"]

@@ -6,7 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MqttSubscriber {
 
-    String broker = "tcp://test.mosquitto.org:1883";
+    String broker = "tcp://mosquitto:1883";
     String topic = "hda/group_e_9/VS";
     PayloadHandler payloadHandler;
 

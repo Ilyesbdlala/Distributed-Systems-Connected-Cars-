@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 class Sensor {
   // params
@@ -12,7 +13,7 @@ class Sensor {
 
   public MqttPublisher mqttPub ;
 
-  public void run() {
+  public void run() throws MqttException {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
     Random rand = new Random();
     double index = 0;

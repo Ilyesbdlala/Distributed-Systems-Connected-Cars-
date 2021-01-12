@@ -1,6 +1,8 @@
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 public class Main {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws MqttException {
 
     Sensor s = new Sensor();
     try {
@@ -20,6 +22,7 @@ public class Main {
 
     System.out.println("Sensor started");
     s.mqttPub = new MqttPublisher();
+    s.mqttPub.init();
     s.run();
 
   }

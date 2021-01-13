@@ -1,7 +1,8 @@
 version: '3.7'
 services:
-  sensor-one:
+  sensor-1:
     image: sensor:latest
+    restart: on-failure
     build:
       context: .
       dockerfile: sensorfile
@@ -9,26 +10,30 @@ services:
       - 'ip=centralStation'
       - 'port=51020'
       - 'sensortype=Fuel_Level'
-  sensor-two:
+  sensor-2:
     image: sensor:latest
+    restart: on-failure
     environment:
       - 'ip=centralStation'
       - 'port=51021'
       - 'sensortype=TravelDistance'
-  sensor-three:
+  sensor-3:
     image: sensor:latest
+    restart: on-failure
     environment:
       - 'ip=centralStation'
       - 'port=51022'
       - 'sensortype=TrafficState'
-  sensor-four:
+  sensor-4:
     image: sensor:latest
+    restart: on-failure
     environment:
       - 'ip=centralStation'
       - 'port=51023'
       - 'sensortype=AvgSpeed'
-  sensor-five:
+  sensor-5:
     image: sensor:latest
+    restart: on-failure
     environment:
       - 'ip=centralStation'
       - 'port=51024'
@@ -41,21 +46,20 @@ services:
       - 'stationname=Group_e9_Station'
       - 'sensorcount=5'
       - 'sensorstartport=51020'
-      - 'rpcip=127.0.0.1'
     ports:
       - 8080:8080
       - 51030:51030
   serviceprovider:
     image: rpc
+    restart: on-failure
     build:
       context: .
       dockerfile: serviceproviderfile
     environment:
-      - 'ip=127.0.0.1'
-      - 'port=9091'
+      - 'ip=centralstation'
+      - 'port=56565'
     ports:
       - 9091:9091
-
   mosquitto:
     image: "eclipse-mosquitto"
     container_name: "mosquitto"
@@ -64,3 +68,14 @@ services:
       - 9001:9001
     volumes:
       - "./mosquitto.conf:/mosquitto/config/mosquitto.conf"
+  mongo:
+    image: mongo:latest
+    volumes:
+      - "./mongo-data:/data/db"
+  mongo-client:
+    image: mongo-express:latest
+    restart: on-failure
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo

@@ -49,8 +49,7 @@ public class Main {
     try {
       TServerTransport serverTransport = new TServerSocket(56565);
       TServer server = new TSimpleServer(new Args(serverTransport).processor(processor));
-
-      System.out.println("Starting the simple server...");
+      System.out.println("Starting RPC Server");
       server.serve();
     } catch (Exception e) {
       e.printStackTrace();

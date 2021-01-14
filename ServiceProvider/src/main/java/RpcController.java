@@ -3,7 +3,6 @@ import com.mongodb.client.MongoCollection;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import org.apache.thrift.TException;
 import org.bson.Document;

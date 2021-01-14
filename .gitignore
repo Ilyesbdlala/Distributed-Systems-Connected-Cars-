@@ -69,4 +69,11 @@ fabric.properties
 #.iml files
 Sensor/Sensor.iml
 Central/Central.iml
+ServiceProvider/ServiceProvider.iml
+
+ServiceProvider/target/*
+
+mongo-data/*
+!mongo-data/.gitkeep
+
 

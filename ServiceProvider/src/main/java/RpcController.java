@@ -1,33 +1,35 @@
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
 import org.apache.thrift.TException;
 import org.bson.Document;
 import rpc_generated.SensorService;
 
-public class RpcController {
-  public void perform(SensorService.Client client, MongoCollection<Document> collection) throws TException, InterruptedException {
-    Map<Integer, String> sensorValues;
+public class RpcController implements SensorService.Iface {
+  private SensorData sensorData;
+  private MongoDatabase db;
 
-    System.out.println("ServiceClientStarted");
-    String msg;
+  public RpcController(MongoDatabase database) {
+    db = database;
+  }
+
+  @Override
+  public boolean getValues(String value) throws TException {
     Gson g = new Gson();
-    while (true) {
-      Thread.sleep(1000);
-      sensorValues = client.getValues();
-      for (Map.Entry<Integer, String> entry : sensorValues.entrySet()) {
-        msg = entry.getValue();
-        writeMessageToCsv(msg);
+    System.out.println(value);
 
-        SensorData sensorData;
-        sensorData = g.fromJson(msg, SensorData.class);
-        System.out.println(sensorData.toString());
-        collection.insertOne(sensorData.createMongoDocument());
-      }
-    }
+    writeMessageToCsv(value);
+
+    sensorData = g.fromJson(value, SensorData.class);
+
+    MongoCollection<Document> collection = db.getCollection(sensorData.getSensortype());
+
+    collection.insertOne(sensorData.createMongoDocument());
+
+    return true;
   }
 
   private void writeMessageToCsv(String msg) {

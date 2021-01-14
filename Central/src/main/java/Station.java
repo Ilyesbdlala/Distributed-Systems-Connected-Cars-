@@ -1,3 +1,5 @@
+import org.apache.thrift.transport.TTransportException;
+
 public class Station {
 
   //params
@@ -11,10 +13,11 @@ public class Station {
   public MqttSubscriber mqttSub;
 
 
-  public void init(RpcController rpc) {
+  public void init() throws TTransportException {
+    RpcController.connect();
     mqttSub = new MqttSubscriber();
-    mqttSub.setRpcHandler(rpc);
     mqttSub.run();
+
 
   }
 }

@@ -1,42 +1,55 @@
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TSocket;
-import org.apache.thrift.transport.TTransport;
-import org.bson.Document;
+import org.apache.thrift.server.TServer;
+import org.apache.thrift.server.TServer.Args;
+import org.apache.thrift.server.TSimpleServer;
+import org.apache.thrift.transport.TServerSocket;
+import org.apache.thrift.transport.TServerTransport;
 import rpc_generated.SensorService;
 
 public class Main {
-    public static RpcController _controller = new RpcController();
+
+    public static RpcController handler;
+
+    public static SensorService.Processor processor;
 
 
     public static void main(String [] args) throws InterruptedException {
         MongoClient mongoClient = new MongoClient("mongo", 27017);
         MongoDatabase database = mongoClient.getDatabase("vsdb");
-        MongoCollection<Document> collection = database.getCollection("sensors");
 
-        try {
-            TTransport transport;
+        handler = new RpcController(database);
+        processor = new SensorService.Processor(handler);
+
+        Runnable simple = new Runnable() {
+            public void run() {
+                connect(processor);
+            }
+        };
+
+        new Thread(simple).start();
+
+
+
+
 
             String ip = args[0];
 
             String portString = args[1];
             int port = Integer.parseInt(portString.replaceAll("\\D+",""));
 
-            transport = new TSocket(ip, port);//56565);
-            transport.open();
 
-            TProtocol protocol = new TBinaryProtocol(transport);
-            SensorService.Client client = new SensorService.Client(protocol);
 
-            _controller.perform(client, collection);
+    }
 
-            transport.close();
-        } catch (TException x) {
-            x.printStackTrace();
+    public static void connect(SensorService.Processor processor) {
+        try {
+            TServerTransport serverTransport = new TServerSocket(56565);
+            TServer server = new TSimpleServer(new Args(serverTransport).processor(processor));
+            System.out.println("Starting RPC Server");
+            server.serve();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

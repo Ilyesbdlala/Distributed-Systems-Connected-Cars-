@@ -27,4 +27,8 @@ public class SensorData {
         ", value='" + value + '\'' +
         '}';
   }
+
+  public String getSensortype() {
+    return sensortype;
+  }
 }

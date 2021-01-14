@@ -1,3 +1,4 @@
+import org.apache.thrift.TException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -25,12 +26,12 @@ public class MqttSubscriber {
                 }
 
                 @Override
-                public void messageArrived(String s, MqttMessage mqttMessage) {
+                public void messageArrived(String s, MqttMessage mqttMessage) throws TException {
                     String message = new String(mqttMessage.getPayload()) ;
                     System.out.println("Message received: "+ message );
                     SensorData sd = new SensorData(message);
                     payloadHandler = new PayloadHandler(sd);
-                    payloadHandler.receivedMessage(message, _rpcHandler);
+                    payloadHandler.onReceiveMessage();
 
                 }
                 @Override

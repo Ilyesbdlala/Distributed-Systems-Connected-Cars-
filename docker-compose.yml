@@ -1,8 +1,19 @@
 version: '3.7'
 services:
+  mosquitto:
+    image: "eclipse-mosquitto"
+    container_name: "mosquitto"
+    ports:
+      - 2500:1883
+      - 9001:9001
+    volumes:
+      - "./mosquitto.conf:/mosquitto/config/mosquitto.conf"
   sensor-1:
     image: sensor:latest
     restart: on-failure
+    depends_on:
+      - mosquitto
+      - centralstation
     build:
       context: .
       dockerfile: sensorfile
@@ -13,6 +24,9 @@ services:
   sensor-2:
     image: sensor:latest
     restart: on-failure
+    depends_on:
+      - mosquitto
+      - centralstation
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -20,6 +34,9 @@ services:
   sensor-3:
     image: sensor:latest
     restart: on-failure
+    depends_on:
+      - mosquitto
+      - centralstation
     environment:
       - 'ip=centralStation'
       - 'port=51022'
@@ -27,6 +44,9 @@ services:
   sensor-4:
     image: sensor:latest
     restart: on-failure
+    depends_on:
+      - mosquitto
+      - centralstation
     environment:
       - 'ip=centralStation'
       - 'port=51023'
@@ -34,6 +54,9 @@ services:
   sensor-5:
     image: sensor:latest
     restart: on-failure
+    depends_on:
+      - mosquitto
+      - centralstation
     environment:
       - 'ip=centralStation'
       - 'port=51024'
@@ -52,6 +75,10 @@ services:
   serviceprovider:
     image: rpc
     restart: on-failure
+    depends_on:
+      - mosquitto
+      - centralstation
+      - mongo
     build:
       context: .
       dockerfile: serviceproviderfile
@@ -60,18 +87,16 @@ services:
       - 'port=56565'
     ports:
       - 9091:9091
-  mosquitto:
-    image: "eclipse-mosquitto"
-    container_name: "mosquitto"
-    ports:
-      - 1883:1883
-      - 9001:9001
-    volumes:
-      - "./mosquitto.conf:/mosquitto/config/mosquitto.conf"
   mongo:
+    container_name: mongo
     image: mongo:latest
-    volumes:
-      - "./mongo-data:/data/db"
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    depends_on:
+      - mosquitto
+      - centralstation
   mongo-client:
     image: mongo-express:latest
     restart: on-failure

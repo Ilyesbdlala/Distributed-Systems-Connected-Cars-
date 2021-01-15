@@ -12,7 +12,7 @@ class Sensor {
 
   public MqttPublisher mqttPub ;
 
-  public void run() throws MqttException {
+  public void run() throws MqttException, InterruptedException {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     Random rand = new Random();
@@ -23,29 +23,28 @@ class Sensor {
     while (true) {
         index++;
         index = index % 100; //max 500
-      try {
-        Thread.sleep(1000); //wait for one second
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
 
       //String switchstr = this.sensortype.substring(0,this.sensortype.length()-1); //Remove
 
         switch (this.sensortype) {
           case "Fuel_Level": {
             sensorValue = rand.nextInt(100);
+            Thread.sleep(5000);
             break;
           }
           case "TravelDistance": {
             sensorValue = rand.nextInt(100000);
+            Thread.sleep(10000);
             break;
           }
           case "TrafficState": {
             sensorValue = rand.nextInt(3);
+            Thread.sleep(30000);
             break;
           }
           case "AvgSpeed": {
             sensorValue = rand.nextInt(200);
+            Thread.sleep(1000);
             break;
           }
           default:

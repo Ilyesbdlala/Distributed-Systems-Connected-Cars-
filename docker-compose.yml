@@ -70,13 +70,28 @@ services:
       - 'sensorcount=5'
       - 'sensorstartport=51020'
     depends_on:
-      - serviceprovider
+      - serviceprovider_1
+      - serviceprovider_2
     ports:
       - 8080:8080
       - 51030:51030
-  serviceprovider:
+
+  centralstation_2:
+    build:
+      context: .
+      dockerfile: centralfile
+    environment:
+      - 'stationname=Group_e9_Station'
+      - 'sensorcount=5'
+      - 'sensorstartport=51020'
+    depends_on:
+      - serviceprovider_1
+      - serviceprovider_2
+
+
+  serviceprovider_1:
     image: rpc
-    restart: on-failure
+    restart: always
     depends_on:
       - mosquitto
       - mongo
@@ -88,6 +103,21 @@ services:
       - 'port=56565'
     ports:
       - 9091:9091
+
+  serviceprovider_2:
+    image: rpc
+    restart: always
+    depends_on:
+      - mosquitto
+      - mongo
+    build:
+      context: .
+      dockerfile: serviceproviderfile
+    environment:
+      - 'ip=centralstation'
+      - 'port=56565'
+    ports:
+      - 9092:9091
   mongo:
     container_name: mongo
     image: mongo:latest
@@ -102,3 +132,12 @@ services:
       - 8081:8081
     depends_on:
       - mongo
+  nginx:
+    build:
+      context: .
+      dockerfile: proxyfile
+    ports:
+      - "8082:80"
+    depends_on:
+      - serviceprovider_1
+      - serviceprovider_2

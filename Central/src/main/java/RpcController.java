@@ -13,7 +13,7 @@ public abstract class RpcController{
 
   public static void connect() throws TTransportException {
 
-    transport = new TSocket("serviceprovider", 56565);//56565);
+    transport = new TSocket("nginx", 56565);//56565);
     transport.open();
     TProtocol protocol = new TBinaryProtocol(transport);
     client = new SensorService.Client(protocol);

@@ -8,12 +8,6 @@ RUN mvn -f /usr/station/pom.xml clean package
 FROM openjdk:11
 COPY --from=build /usr/station/target /usr/app
 
-# default paramters
-ARG stationname="Generic"
-ARG sensorcount=4
-ARG sensorstartport=51020
-ARG rpcip="127.0.0.1"
-
 # Expose all the ports for the sensors and management interface
 EXPOSE 8080 51020 51021 51022 51023 51024 1883
 

@@ -3,6 +3,7 @@ public class SensorData {
   private String type;
   private String value;
   private int id;
+  public static String stationName;
 
 
   public SensorData(String timestamp, String type, String value) {
@@ -37,6 +38,7 @@ public class SensorData {
         "timestamp='" + timestamp + '\'' +
         ", type='" + type + '\'' +
         ", value='" + value + '\'' +
+        ", station='" + stationName + '\'' +
         '}';
   }
 
@@ -45,6 +47,7 @@ public class SensorData {
         + "\"timestamp\":\"" + this.timestamp
         + "\",\"sensortype\":\"" + this.type
         + "\",\"value\":" + this.value
+        + "\",\"station\":" + stationName
         + "}";
   }
 }

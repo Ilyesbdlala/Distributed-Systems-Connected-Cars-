@@ -7,25 +7,24 @@ import org.apache.thrift.transport.TTransportException;
 import rpc_generated.SensorService;
 
 
-public abstract class RpcController{
+public abstract class RpcController {
+
   private static TTransport transport;
   private static SensorService.Client client;
 
-  public static void connect() throws TTransportException {
-
-    transport = new TSocket("nginx", 56565);//56565);
+  public static void connect(String nginxIp, int nginxPort) throws TTransportException {
+    transport = new TSocket(nginxIp, nginxPort);
     transport.open();
     TProtocol protocol = new TBinaryProtocol(transport);
     client = new SensorService.Client(protocol);
   }
 
-  public void close(){
+  public void close() {
     transport.close();
   }
 
   public static boolean perform(String values) throws TException {
     return client.getValues(values);
   }
-
 
 }

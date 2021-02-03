@@ -8,11 +8,6 @@ RUN mvn -f /usr/sensor/pom.xml clean package
 FROM openjdk:11
 COPY --from=build /usr/sensor/target /usr/app
 
-# default paramters
-ARG ip="127.0.0.1"
-ARG port=51020
-ARG sensortype="Generic Sensor"
-
 EXPOSE 1883
 
 COPY Sensor/sensor.sh /run.sh

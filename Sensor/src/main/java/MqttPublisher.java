@@ -6,9 +6,16 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class MqttPublisher {
 
     // MQTT
-    String broker = "tcp://mosquitto:1883";
-    String topic = "hda/group_e_9/VS";
+    String broker; //= "tcp://mosquitto:1883";
+    String topic; //= "hda/group_e_9/VS";
     MqttClient client;
+
+
+    public MqttPublisher(String broker, String topic) {
+        System.out.println(broker + topic);
+        this.broker = broker;
+        this.topic = topic;
+    }
 
     public void init() throws MqttException {
         // Create some MQTT connection options.

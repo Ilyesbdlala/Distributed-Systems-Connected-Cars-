@@ -7,10 +7,16 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MqttSubscriber {
 
-    String broker = "tcp://mosquitto:1883";
-    String topic = "hda/group_e_9/VS";
+    String broker;// = "tcp://mosquitto:1883";
+    String topic; //= "hda/group_e_9/VS";
     PayloadHandler payloadHandler;
     RpcController _rpcHandler;
+
+    public MqttSubscriber(String broker, String topic) {
+        System.out.println("SensorBroker = " + broker + "Sensor Topic =" + topic);
+        this.broker = broker;
+        this.topic = topic;
+    }
 
     public void setRpcHandler(RpcController rpc){
         _rpcHandler = rpc;

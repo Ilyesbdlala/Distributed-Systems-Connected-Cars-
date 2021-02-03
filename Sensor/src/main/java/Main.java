@@ -1,16 +1,22 @@
+import java.lang.reflect.Array;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class Main {
-
   public static void main(String[] args) throws MqttException, InterruptedException {
 
     Sensor s = new Sensor();
-    try {
 
+    try {
+//      String[] q = args;
+//        for (String sd : args){
+//        System.out.println(sd);
+//      }
       s.ip = args[0];
       s.port = Integer.parseInt(args[1]);
       s.sensortype = args[2];
-//        s.sensortype = s.sensortype.substring(0,s.sensortype.length()-1);
+      String topic = args[4].replaceAll("[^A-Za-z0-9_:/-]*$","");
+      s.mqttPub = new MqttPublisher(args[3], topic);
+//      s.sensortype = s.sensortype.substring(0,s.sensortype.length()-1);
 
 
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -21,7 +27,7 @@ public class Main {
     }
 
     System.out.println("Sensor started");
-    s.mqttPub = new MqttPublisher();
+
     s.mqttPub.init();
     s.run();
 

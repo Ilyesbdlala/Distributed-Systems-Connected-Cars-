@@ -15,36 +15,27 @@ public class Main {
 
 
     public static void main(String [] args) throws InterruptedException {
-        MongoClient mongoClient = new MongoClient("mongo", 27017);
+        MongoClient mongoClient = new MongoClient(args[0], Integer.parseInt(args[1]));
         MongoDatabase database = mongoClient.getDatabase("vsdb");
+
+        String portString = args[2];
+        int port = Integer.parseInt(portString.replaceAll("\\D+",""));
 
         handler = new RpcController(database);
         processor = new SensorService.Processor(handler);
 
         Runnable simple = new Runnable() {
             public void run() {
-                connect(processor);
+                connect(processor, port);
             }
         };
 
         new Thread(simple).start();
-
-
-
-
-
-            String ip = args[0];
-
-            String portString = args[1];
-            int port = Integer.parseInt(portString.replaceAll("\\D+",""));
-
-
-
     }
 
-    public static void connect(SensorService.Processor processor) {
+    public static void connect(SensorService.Processor processor, int port) {
         try {
-            TServerTransport serverTransport = new TServerSocket(56565);
+            TServerTransport serverTransport = new TServerSocket(port);
             TServer server = new TSimpleServer(new Args(serverTransport).processor(processor));
             System.out.println("Starting RPC Server");
             server.serve();

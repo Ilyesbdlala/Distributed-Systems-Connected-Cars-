@@ -1,123 +1,190 @@
 version: '3.7'
 services:
-  mosquitto:
+
+  ###########################
+  ###### Car 1 ##############
+  ###########################
+
+  mosquitto_1:
     image: "eclipse-mosquitto"
-    container_name: "mosquitto"
-    ports:
-      - 2500:1883
-      - 9001:9001
-    volumes:
-      - "./mosquitto.conf:/mosquitto/config/mosquitto.conf"
-  sensor-1:
-    image: sensor:latest
-    restart: on-failure
-    depends_on:
-      - mosquitto
-      - centralstation
-    build:
-      context: .
-      dockerfile: sensorfile
-    environment:
-      - 'ip=centralStation'
-      - 'port=51020'
-      - 'sensortype=Fuel_Level'
-  sensor-2:
-    image: sensor:latest
-    restart: on-failure
-    depends_on:
-      - mosquitto
-      - centralstation
-    environment:
-      - 'ip=centralStation'
-      - 'port=51021'
-      - 'sensortype=TravelDistance'
-  sensor-3:
-    image: sensor:latest
-    restart: on-failure
-    depends_on:
-      - mosquitto
-      - centralstation
-    environment:
-      - 'ip=centralStation'
-      - 'port=51022'
-      - 'sensortype=TrafficState'
-  sensor-4:
-    image: sensor:latest
-    restart: on-failure
-    depends_on:
-      - mosquitto
-      - centralstation
-    environment:
-      - 'ip=centralStation'
-      - 'port=51023'
-      - 'sensortype=AvgSpeed'
-  sensor-5:
-    image: sensor:latest
-    restart: on-failure
-    depends_on:
-      - mosquitto
-      - centralstation
-    environment:
-      - 'ip=centralStation'
-      - 'port=51024'
-      - 'sensortype=AvgSpeed'
-  centralstation:
+    container_name: "mosquitto_1"
+  centralstation_1:
     build:
       context: .
       dockerfile: centralfile
     environment:
-      - 'stationname=Group_e9_Station'
-      - 'sensorcount=5'
-      - 'sensorstartport=51020'
+      - 'stationname=Station1'
+      - 'nginxip=nginx'
+      - 'nginxport=56565'
+      - 'mqttbroker=tcp://mosquitto_1:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
     depends_on:
-      - serviceprovider_1
-      - serviceprovider_2
+      - nginx
     ports:
       - 8080:8080
-      - 51030:51030
-
+  sensor-1:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_1
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=TravelDistance'
+      - 'mqttbroker=tcp://mosquitto_1:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
+  sensor-2:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_1
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=Fuel_Level'
+      - 'mqttbroker=tcp://mosquitto_1:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
+  sensor-3:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_1
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=AvgSpeed'
+      - 'mqttbroker=tcp://mosquitto_1:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
+  sensor-4:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_1
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=TrafficState'
+      - 'mqttbroker=tcp://mosquitto_1:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
+  ###########################
+  ###### Car 2 ##############
+  ###########################
+  mosquitto_2:
+    image: "eclipse-mosquitto"
+    container_name: "mosquitto-2"
+  sensor-6:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_2
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=Fuel_Level'
+      - 'mqttbroker=tcp://mosquitto_2:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
+  sensor-5:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_2
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=TravelDistance'
+      - 'mqttbroker=tcp://mosquitto_2:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
+  sensor-7:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_2
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=TrafficState'
+      - 'mqttbroker=tcp://mosquitto_2:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
+  sensor-8:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: sensorfile
+    depends_on:
+      - mosquitto_2
+    environment:
+      - 'ip=centralStation'
+      - 'port=51021'
+      - 'sensortype=AvgSpeed'
+      - 'mqttbroker=tcp://mosquitto_2:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
   centralstation_2:
     build:
       context: .
       dockerfile: centralfile
     environment:
-      - 'stationname=Group_e9_Station'
-      - 'sensorcount=5'
-      - 'sensorstartport=51020'
+      - 'stationname=Station2'
+      - 'nginxip=nginx'
+      - 'nginxport=56565'
+      - 'mqttbroker=tcp://mosquitto_2:1883'
+      - 'mqtttopic=hda/group_e_9/VS'
     depends_on:
-      - serviceprovider_1
-      - serviceprovider_2
-
-
+      - nginx
+    ports:
+      - 8084:8080
+  ###########################
+  ###### Backend ############
+  ###########################
   serviceprovider_1:
-    image: rpc
     restart: always
     depends_on:
-      - mosquitto
       - mongo
+      - mongo-client
     build:
       context: .
       dockerfile: serviceproviderfile
     environment:
-      - 'ip=centralstation'
-      - 'port=56565'
-    ports:
-      - 9091:9091
-
+      - 'dbip=mongo'
+      - 'dbport=27017'
+      - 'rpcport=56565'
   serviceprovider_2:
-    image: rpc
     restart: always
     depends_on:
-      - mosquitto
       - mongo
+      - mongo-client
     build:
       context: .
       dockerfile: serviceproviderfile
     environment:
-      - 'ip=centralstation'
-      - 'port=56565'
-    ports:
-      - 9092:9091
+      - 'dbip=mongo'
+      - 'dbport=27017'
+      - 'rpcport=56565'
+  serviceprovider_3:
+    restart: always
+    depends_on:
+      - mongo
+      - mongo-client
+    build:
+      context: .
+      dockerfile: serviceproviderfile
+    environment:
+      - 'dbip=mongo'
+      - 'dbport=27017'
+      - 'rpcport=56565'
   mongo:
     container_name: mongo
     image: mongo:latest

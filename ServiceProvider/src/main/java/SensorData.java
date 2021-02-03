@@ -4,18 +4,21 @@ public class SensorData {
   private String timestamp;
   private String sensortype;
   private String value;
+  private String stationName;
 
 
-  public SensorData(String timestamp, String type, String value) {
+  public SensorData(String timestamp, String type, String value, String stationName) {
     this.timestamp = timestamp;
     this.sensortype = type;
     this.value = value;
+    this.stationName = stationName;
   }
 
   public Document createMongoDocument(){
     Document doc = new Document("timestamp", timestamp)
         .append("type", sensortype)
-        .append("value", value);
+        .append("value", value)
+        .append("stationName", stationName);
     return doc;
   }
 
@@ -25,6 +28,7 @@ public class SensorData {
         "timestamp='" + timestamp + '\'' +
         ", type='" + sensortype + '\'' +
         ", value='" + value + '\'' +
+        ", stationName='" + stationName + '\'' +
         '}';
   }
 

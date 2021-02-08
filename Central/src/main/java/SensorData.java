@@ -47,7 +47,7 @@ public class SensorData {
         + "\"timestamp\":\"" + this.timestamp
         + "\",\"sensortype\":\"" + this.type
         + "\",\"value\":" + this.value
-        + "\",\"station\":" + stationName
+        + ",\"station\":\"" + stationName + "\""
         + "}";
   }
 }

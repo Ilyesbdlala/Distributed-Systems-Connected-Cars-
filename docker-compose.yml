@@ -152,11 +152,13 @@ services:
   serviceprovider_1:
     restart: always
     depends_on:
-      - mongo
-      - mongo-client
+      - node3
+#      - mongo-client
     build:
       context: .
       dockerfile: serviceproviderfile
+#    networks:
+#      - backend
     environment:
       - 'dbip=mongo'
       - 'dbport=27017'
@@ -164,11 +166,13 @@ services:
   serviceprovider_2:
     restart: always
     depends_on:
-      - mongo
-      - mongo-client
+      - node3
+#      - mongo-client
     build:
       context: .
       dockerfile: serviceproviderfile
+#    networks:
+#      - backend
     environment:
       - 'dbip=mongo'
       - 'dbport=27017'
@@ -176,29 +180,55 @@ services:
   serviceprovider_3:
     restart: always
     depends_on:
-      - mongo
-      - mongo-client
+      - node3
+#      - mongo-client
     build:
       context: .
       dockerfile: serviceproviderfile
+#    networks:
+#      - backend
     environment:
       - 'dbip=mongo'
       - 'dbport=27017'
       - 'rpcport=56565'
   mongo:
-    container_name: mongo
-    image: mongo:latest
-    restart: always
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    image: mongo
+    ports:
+      - 30001:27017
+    volumes:
+      - ./backenddata/node1:/data/db
+#    networks:
+#      - backend
+    command: mongod --replSet comments
+  node2:
+    image: mongo
+    ports:
+      - 30002:27017
+    volumes:
+      - ./backenddata/node2:/data/db
+#    networks:
+#      - backend
+    command: mongod --replSet comments
+    depends_on :
+      - mongo
+  node3:
+    image: mongo
+    ports:
+      - 30003:27017
+    volumes:
+      - ./backenddata/node3:/data/db
+#    networks:
+#      - backend
+    command: mongod --replSet comments
+    depends_on :
+      - node2
   mongo-client:
     image: mongo-express:latest
     restart: on-failure
     ports:
       - 8081:8081
     depends_on:
-      - mongo
+      - node3
   nginx:
     build:
       context: .
@@ -208,3 +238,9 @@ services:
     depends_on:
       - serviceprovider_1
       - serviceprovider_2
+
+#networks:
+#  backend:
+#    driver: bridge
+#  car:
+#    driver: bridge

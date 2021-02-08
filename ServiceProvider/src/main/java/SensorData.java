@@ -15,6 +15,7 @@ public class SensorData {
   }
 
   public Document createMongoDocument(){
+    System.out.print(stationName);
     Document doc = new Document("timestamp", timestamp)
         .append("type", sensortype)
         .append("value", value)

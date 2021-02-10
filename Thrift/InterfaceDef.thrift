@@ -5,7 +5,14 @@ exception InvalidOperation {
 	2: string why
 }
 
+struct SensorData{                            
+    1: required string timeStamp;             
+    2: required string sensorType;             
+    3: required string value;
+    4: required string sationName;
+}
+
 service SensorService
 {
-        bool getValues(list<string> value),
+        bool sendValues(1:SensorData value),
 }

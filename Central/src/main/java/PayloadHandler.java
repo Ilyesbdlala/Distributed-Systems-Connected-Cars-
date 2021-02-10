@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import org.apache.thrift.TException;
+import rpc_generated.SensorValues;
 
 public class PayloadHandler {
     SensorData _sensorData;
@@ -13,7 +14,7 @@ public class PayloadHandler {
     public void onReceiveMessage() throws TException {
         writeMessageToCsv(_sensorData.toString());
         writeValueToJson();
-        if (!RpcController.perform(_sensorData.toJsonString()))System.out.println("Lost Connection to Rpc Server");
+        RpcController.perform(_sensorData.convertSensorDataToRPC());
     }
 
     private void writeMessageToCsv(String msg) {
@@ -43,5 +44,7 @@ public class PayloadHandler {
             e.printStackTrace();
         }
     }
+
+
 
 }

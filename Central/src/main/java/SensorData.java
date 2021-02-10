@@ -1,3 +1,5 @@
+import rpc_generated.SensorValues;
+
 public class SensorData {
   private String timestamp;
   private String type;
@@ -49,5 +51,14 @@ public class SensorData {
         + "\",\"value\":" + this.value
         + ",\"station\":\"" + stationName + "\""
         + "}";
+  }
+
+  public SensorValues convertSensorDataToRPC(){
+    SensorValues values = new SensorValues();
+    values.setSensorType(this.type);
+    values.setSationName(stationName);
+    values.setTimeStamp(this.timestamp);
+    values.setValue(this.value);
+    return values;
   }
 }

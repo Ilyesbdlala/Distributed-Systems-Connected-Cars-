@@ -1,25 +1,32 @@
 import org.bson.Document;
+import rpc_generated.SensorValues;
 
 public class SensorData {
   private String timestamp;
   private String sensortype;
   private String value;
-  private String stationName;
+  private String station;
 
 
   public SensorData(String timestamp, String type, String value, String stationName) {
     this.timestamp = timestamp;
     this.sensortype = type;
     this.value = value;
-    this.stationName = stationName;
+    this.station = stationName;
+  }
+
+  public SensorData(SensorValues values){
+    timestamp = values.getTimeStamp();
+    sensortype = values.getSensorType();
+    value = values.getValue();
+    station = values.getSationName();
   }
 
   public Document createMongoDocument(){
-    System.out.print(stationName);
     Document doc = new Document("timestamp", timestamp)
         .append("type", sensortype)
         .append("value", value)
-        .append("stationName", stationName);
+        .append("stationName", station);
     return doc;
   }
 
@@ -29,11 +36,12 @@ public class SensorData {
         "timestamp='" + timestamp + '\'' +
         ", type='" + sensortype + '\'' +
         ", value='" + value + '\'' +
-        ", stationName='" + stationName + '\'' +
+        ", stationName='" + station + '\'' +
         '}';
   }
 
   public String getSensortype() {
     return sensortype;
   }
+
 }

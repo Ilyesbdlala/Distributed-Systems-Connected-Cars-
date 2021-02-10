@@ -8,8 +8,6 @@ RUN mvn -f /usr/sensor/pom.xml clean package
 FROM openjdk:11
 COPY --from=build /usr/sensor/target /usr/app
 
-EXPOSE 1883
-
 COPY Sensor/sensor.sh /run.sh
 
 ENTRYPOINT ["sh","/run.sh"]

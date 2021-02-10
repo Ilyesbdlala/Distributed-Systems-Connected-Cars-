@@ -10,5 +10,4 @@ COPY --from=build /usr/serviceprovider/target /
 
 COPY ServiceProvider/serviceprovider.sh /run.sh
 
-
-ENTRYPOINT ["sh","/run.sh"]
+ENTRYPOINT ["sh", "/run.sh"]

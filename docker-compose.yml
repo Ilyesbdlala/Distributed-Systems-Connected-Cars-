@@ -19,7 +19,10 @@ services:
       - 'mqttbroker=tcp://mosquitto_1:1883'
       - 'mqtttopic=hda/group_e_9/VS'
     depends_on:
-      - nginx
+      nginx:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     ports:
       - 8080:8080
   sensor-1:
@@ -28,7 +31,10 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_1
+      mongo:
+        condition: service_healthy
+      mosquitto_1:
+        condition: service_started
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -41,7 +47,10 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_1
+      mosquitto_1:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -54,7 +63,10 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_1
+      mosquitto_1:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -67,7 +79,10 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_1
+      mosquitto_1:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -86,7 +101,10 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_2
+      mosquitto_2:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -99,7 +117,10 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_2
+      mosquitto_2:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -112,7 +133,10 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_2
+      mosquitto_2:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     environment:
       - 'ip=centralStation'
       - 'port=51021'
@@ -125,13 +149,17 @@ services:
       context: .
       dockerfile: sensorfile
     depends_on:
-      - mosquitto_2
+      mosquitto_2:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     environment:
       - 'ip=centralStation'
       - 'port=51021'
       - 'sensortype=AvgSpeed'
       - 'mqttbroker=tcp://mosquitto_2:1883'
       - 'mqtttopic=hda/group_e_9/VS'
+
   centralstation_2:
     build:
       context: .
@@ -143,92 +171,93 @@ services:
       - 'mqttbroker=tcp://mosquitto_2:1883'
       - 'mqtttopic=hda/group_e_9/VS'
     depends_on:
-      - nginx
+      nginx:
+        condition: service_started
+      mongo:
+        condition: service_healthy
     ports:
       - 8084:8080
   ###########################
   ###### Backend ############
   ###########################
+ 
   serviceprovider_1:
-    restart: always
     depends_on:
-      - node3
-#      - mongo-client
+      mongo:
+        condition: service_healthy
     build:
       context: .
       dockerfile: serviceproviderfile
-#    networks:
-#      - backend
     environment:
       - 'dbip=mongo'
       - 'dbport=27017'
       - 'rpcport=56565'
+
   serviceprovider_2:
-    restart: always
     depends_on:
-      - node3
-#      - mongo-client
+      mongo:
+        condition: service_healthy
     build:
       context: .
       dockerfile: serviceproviderfile
-#    networks:
-#      - backend
     environment:
       - 'dbip=mongo'
       - 'dbport=27017'
       - 'rpcport=56565'
+
   serviceprovider_3:
-    restart: always
     depends_on:
-      - node3
-#      - mongo-client
+      mongo:
+        condition: service_healthy
     build:
       context: .
       dockerfile: serviceproviderfile
-#    networks:
-#      - backend
     environment:
       - 'dbip=mongo'
       - 'dbport=27017'
       - 'rpcport=56565'
+
   mongo:
-    image: mongo
-    ports:
-      - 30001:27017
-    volumes:
-      - ./backenddata/node1:/data/db
-#    networks:
-#      - backend
-    command: mongod --replSet comments
-  node2:
-    image: mongo
-    ports:
-      - 30002:27017
-    volumes:
-      - ./backenddata/node2:/data/db
-#    networks:
-#      - backend
-    command: mongod --replSet comments
-    depends_on :
+    container_name: mongo1
+    image: mongo:3.6-jessie
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mongo", "rs.status()"]
+      interval: 30s
+      timeout: 3s
+      start_period: 30s
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo2:
+    container_name: mongo2
+    image: mongo:3.6-jessie
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo3:
+    container_name: mongo3
+    image: mongo:3.6-jessie
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongosetup:
+    image: mongo:3.6-jessie
+    depends_on:
       - mongo
-  node3:
-    image: mongo
-    ports:
-      - 30003:27017
+      - mongo2
+      - mongo3
     volumes:
-      - ./backenddata/node3:/data/db
-#    networks:
-#      - backend
-    command: mongod --replSet comments
-    depends_on :
-      - node2
+      - .:/scripts
+    restart: "no"
+    entrypoint: [ "bash", "/scripts/mongo_setup.sh" ]
+
   mongo-client:
     image: mongo-express:latest
     restart: on-failure
     ports:
       - 8081:8081
     depends_on:
-      - node3
+      - mongosetup
   nginx:
     build:
       context: .
@@ -238,9 +267,3 @@ services:
     depends_on:
       - serviceprovider_1
       - serviceprovider_2
-
-#networks:
-#  backend:
-#    driver: bridge
-#  car:
-#    driver: bridge

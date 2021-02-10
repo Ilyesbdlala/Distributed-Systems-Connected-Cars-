@@ -1,4 +1,5 @@
 import org.apache.thrift.TException;
+import org.apache.thrift.transport.TTransportException;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -32,13 +33,40 @@ public class MqttSubscriber {
                 }
 
                 @Override
-                public void messageArrived(String s, MqttMessage mqttMessage) throws TException {
+                public void messageArrived(String s, MqttMessage mqttMessage) {
                     String message = new String(mqttMessage.getPayload()) ;
                     System.out.println("Message received: "+ message );
                     SensorData sd = new SensorData(message);
                     payloadHandler = new PayloadHandler(sd);
-                    payloadHandler.onReceiveMessage();
-
+                    Runnable simple = new Runnable() {
+                        public void run() {
+                            try {
+                                payloadHandler.onReceiveMessage();
+                            } catch (TException e) {
+                                RpcController.close();
+                                System.out.println("ERROR: RPC call failure, Reconnecting...");
+                                try {
+                                    if(!RpcController.getTransport().isOpen()){
+                                        RpcController.rebuildConnection();
+                                    }
+                                    payloadHandler.onReceiveMessage();
+                                } catch (TTransportException tTransportException) {
+                                    tTransportException.printStackTrace();
+                                } catch (TException tException) {
+                                    tException.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    while(!RpcController.getTransport().isOpen()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    new Thread(simple).start();
                 }
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {

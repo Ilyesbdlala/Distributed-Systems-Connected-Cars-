@@ -267,3 +267,4 @@ services:
     depends_on:
       - serviceprovider_1
       - serviceprovider_2
+    command: [ nginx-debug, '-g', 'daemon off;' ]

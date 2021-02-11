@@ -1,7 +1,7 @@
 # VS "Connected Cars" 
 This Project shows an example of "Connected Cars"  
-We simulate a car that has an indefinite number of sensors ( 5 in the initial example) that communicate to a central system through an MoM (Message-oriented middleware): MQTT in particular. This data is then relayed to an HTTP Client that allows viewing the state of each sensor.  
-The Data is first saved in the Central system and later persisted in cloud servers through a Service Provider
+We simulate a car that has an indefinite number of sensors ( 8 in the initial example) that communicate to a central system through an MoM (Message-oriented middleware): MQTT in particular. This data is then relayed to an HTTP Client that allows viewing the state of each sensor.  
+The Data is first saved in the Central system and later persisted in cloud server cluster through Service Providers
 
 Any number of sensors can be implemented by adding their corresponding container images to the [docker-compose.yml](docker-compose.yml) file. 
 ### MQTT  
@@ -18,24 +18,37 @@ We use Mosquitto as our MQTT Broker. Mosquitto is both lightweight and offering 
 To ensure the consistency of the data. Data is retrieved each time a Message is received to the Subscriber(CentralStation).   
 MongoDB is used as our Database Management System (DBMS). It being a document-oriented database program that can handle JSON formats, makes the management of our sensor data easier.
 
+### High availability and consistency
+To ensure redundancy and fail-safety, a cluster of MongoDB Server nodes is created using the Primary-Secondary Architecture. A custom Script [mongo_setup.sh](mongo_setup.sh) is run first on its own docker container "mongosetup". The shell script provides the server nodes with their respective hosts and their priority value in the server-structure.   
+When the cluster configuration is done, the condition "service_healthy" is fullfilled and upon that the rest of the containers are launched.  
+
+We use [Nginx](https://www.nginx.com/) as our loadbalancer and reverseproxy. All requests from the CentralStation(s) go through the Nginx access point and then relayed to one of the available Serviceproviders. The setup follows this config file [nginx.conf](nginx.conf).   
+Upon failure(or manual shutdown) of one of the serviceproviders used, Nginx loadbalancer will automatically shift the requests to another online serviceprovider.  
+
 ![DesignDoc](./VS_Praktikum_Design.png)  
 ## Dockerfiles
-
-The files [sensorfile](sensorfile), [centralfile](centralfile) and [serviceproviderfile](serviceproviderfile) are the docker files. In these files, the Java projects are compiled in the first step and in the second step the jar is copied into a new container which is used for the execution.  
+The files [sensorfile](sensorfile), [centralfile](centralfile), [serviceproviderfile](serviceproviderfile) and [proxyfile](proxyfile) are the docker files. In these files, the Java projects are compiled in the first step and in the second step the jar is copied into a new container which is used for the execution.  
 We follow the [Multi-Stage Builds](https://docs.docker.com/develop/develop-images/multistage-build/) Practice   
 
 ## Installation
-The Central Control has currently 5 sensors: Fuel Level, Kilometers travelled, Traffic state and 2 consecutive of type Avg. speed
-(This is done to prove the system's ability to handle multiple sensors of the same type).  
-The Sensor type, IP and port are each configured in the compose file [docker-compose](docker-compose.yml )  
+There are currently 8 sensors of types: Fuel Level, Kilometers travelled, Traffic state and Avg. speed. 4 of each for two CentralStations.  
+The Sensor type, IP and custom id are each configured in the compose file [docker-compose](docker-compose.yml).   
+There are also 3 Service providers connected to a MongoDB Server Cluster.  
+All of the above can be freely expanded through the [docker-compose](docker-compose.yml) file.  
+
+It's important to make sure if you're running Windows, to make sure that Windows didnt switch the formating of [mongo_setup.sh](mongo_setup.sh) from LF to CRLF. Otherwise an error occurs in the cluster configuration step.  
 
 ### How To - local build and run
 - `docker-compose build`  
 - `docker-compose up`  
 
-### How To access Sensors in Web Client  
+### How To access Sensors in Web Client of CentralStation 1
 - `localhost:8080/sensors` for sensor history  
-- `localhost:8080/sensor/[1-5]` for each Sensors' current status  
+- `localhost:8080/sensor/[1-4]` for each Sensors' current status  
+
+### How To access Sensors in Web Client of CentralStation 2
+- `localhost:8084/sensors` for sensor history  
+- `localhost:8084/sensor/[1-4]` for each Sensors' current status  
 
 ### How To access the Remote MongoDB Database  
 - `localhost:8081` to access the main MongoDB GUI

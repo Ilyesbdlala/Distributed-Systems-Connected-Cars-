@@ -1,13 +1,56 @@
-image: tmaier/docker-compose:latest
+stages:
+  - test
+  - build
 
-services:
-  - docker:dind
-
-before_script:
-  - docker info
-  - docker-compose --version
-
-build image:
+.build_template:
   stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  variables:
+    DOCKERFILE: Dockerfile
+    TAG: latest
+    # Use single quotes to escape colon
+    DESTINATION: '${CI_REGISTRY_IMAGE}:${TAG}'
+  before_script:
+    # Prepare Kaniko configuration file
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
   script:
-    - docker-compose build
+    # Build and push the image from the given Dockerfile
+    # See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference for available variables
+    - /kaniko/executor --context $CI_PROJECT_DIR
+      --dockerfile ${DOCKERFILE}
+      --destination ${DESTINATION}
+
+.lint_template:
+  stage: test
+  image:
+    name: hadolint/hadolint:latest-debian
+  variables:
+    DOCKERFILE: Dockerfile
+  script:
+    - echo ${DOCKERFILE}
+    - hadolint ${DOCKERFILE}
+
+lint sensor:
+  extends: .lint_template
+  variables:
+    DOCKERFILE: $CI_PROJECT_DIR/sensorfile
+
+lint weatherstation:
+  extends: .lint_template
+  variables:
+    DOCKERFILE: $CI_PROJECT_DIR/centralfile
+
+build sensor:
+  extends: .build_template
+  variables:
+    DOCKERFILE: $CI_PROJECT_DIR/sensorfile
+    DESTINATION: 'registry.code.fbi.h-da.de//distributed-systems/2020_wise_lab/group_e_9//sensor:1'
+
+build weatherstation:
+  extends: .build_template
+  variables:
+    DOCKERFILE: $CI_PROJECT_DIR/centralfile
+    DESTINATION: 'registry.code.fbi.h-da.de/sttistof/vs-demo/weatherstation:1'

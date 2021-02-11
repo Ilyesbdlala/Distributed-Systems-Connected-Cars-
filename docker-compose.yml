@@ -6,7 +6,7 @@ services:
   ###########################
 
   mosquitto_1:
-    image: "eclipse-mosquitto"
+    image: eclipse-mosquitto:1.6.12
     container_name: "mosquitto_1"
   centralstation_1:
     build:
@@ -37,7 +37,7 @@ services:
         condition: service_started
     environment:
       - 'ip=centralStation'
-      - 'port=51021'
+      - 'port=51020'
       - 'sensortype=TravelDistance'
       - 'mqttbroker=tcp://mosquitto_1:1883'
       - 'mqtttopic=hda/group_e_9/VS'
@@ -69,7 +69,7 @@ services:
         condition: service_healthy
     environment:
       - 'ip=centralStation'
-      - 'port=51021'
+      - 'port=51022'
       - 'sensortype=AvgSpeed'
       - 'mqttbroker=tcp://mosquitto_1:1883'
       - 'mqtttopic=hda/group_e_9/VS'
@@ -85,7 +85,7 @@ services:
         condition: service_healthy
     environment:
       - 'ip=centralStation'
-      - 'port=51021'
+      - 'port=51023'
       - 'sensortype=TrafficState'
       - 'mqttbroker=tcp://mosquitto_1:1883'
       - 'mqtttopic=hda/group_e_9/VS'
@@ -93,7 +93,7 @@ services:
   ###### Car 2 ##############
   ###########################
   mosquitto_2:
-    image: "eclipse-mosquitto"
+    image: eclipse-mosquitto:1.6.12
     container_name: "mosquitto-2"
   sensor-6:
     restart: on-failure
@@ -107,7 +107,7 @@ services:
         condition: service_healthy
     environment:
       - 'ip=centralStation'
-      - 'port=51021'
+      - 'port=51020'
       - 'sensortype=Fuel_Level'
       - 'mqttbroker=tcp://mosquitto_2:1883'
       - 'mqtttopic=hda/group_e_9/VS'
@@ -139,7 +139,7 @@ services:
         condition: service_healthy
     environment:
       - 'ip=centralStation'
-      - 'port=51021'
+      - 'port=51022'
       - 'sensortype=TrafficState'
       - 'mqttbroker=tcp://mosquitto_2:1883'
       - 'mqtttopic=hda/group_e_9/VS'
@@ -155,7 +155,7 @@ services:
         condition: service_healthy
     environment:
       - 'ip=centralStation'
-      - 'port=51021'
+      - 'port=51023'
       - 'sensortype=AvgSpeed'
       - 'mqttbroker=tcp://mosquitto_2:1883'
       - 'mqtttopic=hda/group_e_9/VS'
@@ -252,7 +252,7 @@ services:
     entrypoint: [ "bash", "/scripts/mongo_setup.sh" ]
 
   mongo-client:
-    image: mongo-express:latest
+    image: mongo-express:0.54.0
     restart: on-failure
     ports:
       - 8081:8081

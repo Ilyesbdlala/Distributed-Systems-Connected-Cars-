@@ -115,7 +115,16 @@ Scaling sensors seems to be marginally memory intensive.
 Check if the sensor Values were correctly copied  
 Execution:  
 Compare Primary server data with Back-up data  
+```
+$ docker exec -it <DB container> mongo
+$ rs.slaveOk() //to allow read operations to run on secondary nodes
+$ use vsdb
+$ c=db.<name of collection>
+$ c.find()
+```
 Result: **✓** Checked manually.
+
+![ComparisonImg](./Primary_Secondary_Comparison.png)  
 
 **Test 8:** 
 Usual System functionality in case of Server-failure (Servers are in Primary-Secondary Architecture Hot-Standby)  

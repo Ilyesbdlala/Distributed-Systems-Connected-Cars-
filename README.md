@@ -36,7 +36,9 @@ The Sensor type, IP and custom id are each configured in the compose file [docke
 There are also 3 Service providers connected to a MongoDB Server Cluster.  
 All of the above can be freely expanded through the [docker-compose](docker-compose.yml) file.  
 
-It's important to make sure if you're running Windows, to make sure that Windows didnt switch the formating of [mongo_setup.sh](mongo_setup.sh) from LF to CRLF. Otherwise an error occurs in the cluster configuration step.  
+It's important to make sure if you're running Windows, to make sure that Windows didnt switch the formating of [mongo_setup.sh](mongo_setup.sh) from LF to CRLF. Otherwise an error occurs in the cluster configuration step.
+
+A CentralStation will sometimes not load up correctly and not be connected to the RPC, Restarting it will solve the issue.
 
 ### How To - local build and run
 - `docker-compose build`  
@@ -100,17 +102,24 @@ Result: **✓** Checked manually.
 **Test 6:**  
 Performance Test  
 Execution:  
-Sensors are created periodically to measure how many sensors the MQTT broker can handle  
-Result: not yet implemented
+The number of sensors is scaled up to measure how many sensors the MQTT broker can handle  
+Result: using the following command :
+```
+docker-compose up --scale sensor-1=10 (or any other number of sensors, depending on the system capabilities)
+```
+MQTT possible connections is only limited by the RAM(Random access memory) available.
+Scaling sensors seems to be marginally memory intensive.
+
 
 **Test 7:**  
 Check if the sensor Values were correctly copied  
 Execution:  
-Compare first server data with Back-up data  
-Result: not yet implemented
+Compare Primary server data with Back-up data  
+Result: **✓** Checked manually.
 
 **Test 8:** 
 Usual System functionality in case of Server-failure (Servers are in Primary-Secondary Architecture Hot-Standby)  
 Execution:  
 Simulate server failure on Primary Server and see if data is still persisted  
-Result: not yet implemented   
+Result: **✓** Checked manually.
+The failure of one of the used serviceproviders, results in a temporary error. The system quickly recovers and nginx loadbalancer starts forwarding the payloads to another online serviceprovider. Data sent during the short transition is lost.

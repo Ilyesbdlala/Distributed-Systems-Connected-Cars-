@@ -61,13 +61,13 @@ The Gitlab CI pipeline is in the file [.gitlab-ci.yml](.gitlab-ci.yml)
 
 ## Tests
 
-**Test 1:**
+**Test 1:**  
 Check if Sensor Values are recieved correctly  
 Execution:  
 Compare output in Sensor container with output in Central container  
 Result: **✓** Checked manually.
   
-**Test 2:**
+**Test 2:**  
 The roundabout time of each HTTP Request/Response is measured.  
 Execution:  
 Mesure how long the Central takes to answer Get requests   
@@ -75,13 +75,13 @@ Result:
 - Single Sensor HTTP GET Request : 4ms
 - Complete Sensor history HTTP GET Request : 8ms
 
-**Test 3:** 
+**Test 3:**   
 Check if Sensor Values are persisted correctly in Service Provider Servers  
 Execution:  
 Compare saved sensor Values with the Service Provider's  
 Result: **✓** Checked manually.
 
-**Test 4:**  
+**Test 4:**    
 Availability Test  
 Execution:  
 Continually send pings to the Service Provider Server and count the number of responses     
@@ -126,9 +126,9 @@ Result: **✓** Checked manually.
 
 ![ComparisonImg](./Primary_Secondary_Comparison.png)  
 
-**Test 8:** 
+**Test 8:**   
 Usual System functionality in case of Server-failure (Servers are in Primary-Secondary Architecture Hot-Standby)  
-Execution:  
-Simulate server failure on Primary Server and see if data is still persisted  
-Result: **✓** Checked manually.
+Execution:    
+Simulate server failure on Primary Server and see if data is still persisted   
+Result: **✓** Checked manually.   
 The failure of one of the used serviceproviders, results in a temporary error. The system quickly recovers and nginx loadbalancer starts forwarding the payloads to another online serviceprovider. Data sent during the short transition is lost.

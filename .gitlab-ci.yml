@@ -47,10 +47,10 @@ build sensor:
   extends: .build_template
   variables:
     DOCKERFILE: $CI_PROJECT_DIR/sensorfile
-    DESTINATION: 'registry.code.fbi.h-da.de//distributed-systems/2020_wise_lab/group_e_9//sensor:1'
+    DESTINATION: 'registry.code.fbi.h-da.de//distributed-systems/2020_wise_lab/group_e_9/sensor:1'
 
 build weatherstation:
   extends: .build_template
   variables:
     DOCKERFILE: $CI_PROJECT_DIR/centralfile
-    DESTINATION: 'registry.code.fbi.h-da.de/sttistof/vs-demo/weatherstation:1'
+    DESTINATION: 'registry.code.fbi.h-da.de//distributed-systems/2020_wise_lab/group_e_9/centralstation:1'
